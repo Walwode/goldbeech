@@ -1,0 +1,8 @@
+<drawables>
+    <bitmap id="LauncherIcon" filename="launcher_icon.png" />
+    <bitmap id="WaltsWoodDesignBlack" filename="waltswooddesign-black.png" />
+    <bitmap id="WaltsWoodDesignWhite" filename="waltswooddesign-white.png" />
+    <bitmap id="CosmoConsultClaimWhite" filename="cosmoconsult-claim-white.png" />
+    <bitmap id="CosmoConsultClaimColored" filename="cosmoconsult-claim-colored.png" />
+    <bitmap id="CosmoConsultWhite" filename="cosmoconsult-white.png" />
+</drawables>
