@@ -8,21 +8,23 @@ using Toybox.WatchUi as Ui;
 
 class GoldBeechView extends Ui.WatchFace {
 
-	hidden var sc;
     hidden var active;
-    hidden var bitmapWaltsWoodDesign;
-    hidden var bitmapCosmoConsult;
-    hidden var bitmapLaufszeneSachsen;
-    hidden var settings;
+    hidden var logos;
+    hidden var fonts = {};
 
     function initialize() {
         WatchFace.initialize();
 
-    	bitmapWaltsWoodDesign = Ui.loadResource(Rez.Drawables.WaltsWoodDesignWhite);
-    	bitmapCosmoConsult = Ui.loadResource(Rez.Drawables.CosmoConsultClaimColored);
-    	bitmapLaufszeneSachsen = Ui.loadResource(Rez.Drawables.LaufszeneSachsenColored);
-    	
-    	// sc = new SunCalc();
+    	logos = [
+            Ui.loadResource(Rez.Drawables.WaltsWoodDesignWhite),
+    	    Ui.loadResource(Rez.Drawables.CosmoConsultClaimColored),
+    	    Ui.loadResource(Rez.Drawables.LaufszeneSachsenColored),
+    	    Ui.loadResource(Rez.Drawables.Valentine)];
+
+        fonts["TINY"] = Ui.loadResource(Rez.Fonts.SegoeUi12Bold);
+        fonts["NORMAL"] = Ui.loadResource(Rez.Fonts.SegoeUi24Bold);
+        fonts["LARGE"] = Ui.loadResource(Rez.Fonts.SegoeUi60Bold);
+        fonts["LARGE-LIGHT"] = Ui.loadResource(Rez.Fonts.SegoeUi60);
     }
 
     // Load your resources here
@@ -48,11 +50,9 @@ class GoldBeechView extends Ui.WatchFace {
     }
 
     function drawLogo(dc) {
-        // var logo = bitmapWaltsWoodDesign;
-        // var logo = bitmapCosmoConsult;
-        var logo = bitmapLaufszeneSachsen;
+        var logo = logos[App.getApp().getProperty("Logo")];
         dc.drawBitmap(
-        	(dc.getWidth() / 2) - (logo.getWidth() / 2) + 2,
+        	(dc.getWidth() / 2) - (logo.getWidth() / 2),
         	(dc.getHeight() / 2) - (logo.getHeight() / 2),
          	logo);
     }
@@ -63,52 +63,68 @@ class GoldBeechView extends Ui.WatchFace {
 
         dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
         dc.drawText(
-            dc.getWidth() / 2,
-            0,
-            Gfx.FONT_NUMBER_MEDIUM,
-            Lang.format("$1$:$2$", [clockTime.hour.format("%02d"), clockTime.min.format("%02d")]),
-            Gfx.TEXT_JUSTIFY_CENTER);
+            dc.getWidth() / 2 - 1,
+            -5,
+            fonts["LARGE"],
+            Lang.format("$1$", [clockTime.hour.format("%02d")]),
+            Gfx.TEXT_JUSTIFY_RIGHT);
+        dc.drawText(
+            dc.getWidth() / 2 + 1,
+            -5,
+            fonts["LARGE-LIGHT"],
+            Lang.format("$1$", [clockTime.min.format("%02d")]),
+            Gfx.TEXT_JUSTIFY_LEFT);
 
-        if (active) {
+        if (true) {
             dc.drawText(
-                dc.getWidth() / 2 + 42,
-                15,
-                Gfx.FONT_NUMBER_MILD,
+                dc.getWidth() / 2 + 50,
+                25,
+                fonts["NORMAL"],
                 Lang.format("$1$", [clockTime.sec.format("%02d")]),
                 Gfx.TEXT_JUSTIFY_LEFT);
         }
     }
 
     function drawDate(dc) {
-        var currentDate = Time.Gregorian.info(Time.now(), Time.FORMAT_LONG);
+        var currentDateText = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+        var currentDate = Time.Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+
+		var dayInWeek = currentDateText.day_of_week.substring(0,2);
+		var day = currentDateText.day.format("%02d");
+		var month = currentDateText.month.substring(0,3);
+		var weekInYear = CalendarCalc.getIsoWeekNumber(currentDate.year, currentDate.month, currentDate.day);
 
         dc.setColor(Gfx.COLOR_DK_GREEN, Gfx.COLOR_TRANSPARENT);
         dc.drawText(
             dc.getWidth()/2,
-            dc.getHeight() - 35,
-            Gfx.FONT_MEDIUM,
-            Lang.format("$1$ $2$ $3$", [currentDate.day_of_week.substring(0,2), currentDate.day.format("%02d"), currentDate.month.substring(0,3)]),
+            dc.getHeight() - 30,
+            fonts["NORMAL"],
+            Lang.format("$1$ $2$ W$3$", [day, month, weekInYear]),
             Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER);
     }
 
     function drawInfos(dc) {
+        dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
+        dc.setPenWidth(3);
+    	dc.drawLine(0, 138, ((Sys.getSystemStats().battery / 100) * dc.getWidth()), 138);
+    	
         dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
         dc.drawText(
             dc.getWidth() / 4,
-            dc.getHeight() - 35,
-            Gfx.FONT_SMALL,
+            dc.getHeight() - 30,
+            fonts["TINY"],
             Lang.format("$1$%", [Sys.getSystemStats().battery.format("%02d")]),
             Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER);
         dc.drawText(
             3 * dc.getWidth() / 4,
-            dc.getHeight() - 35,
-            Gfx.FONT_SMALL,
+            dc.getHeight() - 30,
+            fonts["TINY"],
             Lang.format("#$1$", [Sys.getDeviceSettings().notificationCount.format("%02d")]),
             Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER);
         dc.drawText(
             dc.getWidth() / 2,
             dc.getHeight() - 10,
-            Gfx.FONT_SMALL,
+            fonts["TINY"],
             Lang.format("$1$", [ActivityMonitor.getInfo().steps.format("%02d")]),
             Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER);
     }
@@ -122,7 +138,8 @@ class GoldBeechView extends Ui.WatchFace {
         dc.drawText(
             dc.getWidth()/2,
             dc.getHeight() - 50,
-            Gfx.FONT_SMALL,
+            fonts["TINY"],
+            // Gfx.FONT_SMALL,
             Lang.format("$1$:$2$", [h.format("%02d"), m.format("%02d")]),
             Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER);
     }
@@ -131,7 +148,7 @@ class GoldBeechView extends Ui.WatchFace {
     // the state of this View and prepare it to be shown. This includes
     // loading resources into memory.
     function onShow() {
-		settings = System.getDeviceSettings();
+		// settings = System.getDeviceSettings();
     }
 
     // Called when this View is removed from the screen. Save the
@@ -143,13 +160,13 @@ class GoldBeechView extends Ui.WatchFace {
     // The user has just looked at their watch. Timers and animations may be started here.
     function onExitSleep() {
     	active = true;
-    	// Ui.requestUpdate();
+    	Ui.requestUpdate();
     }
 
     // Terminate any active timers and prepare for slow updates.
     function onEnterSleep() {
     	active = false;
-    	// Ui.requestUpdate();
+    	Ui.requestUpdate();
     }
 
 }
