@@ -1,6 +1,9 @@
 using Toybox.Application;
 using Toybox.WatchUi;
 
+var gLocationLat = null;
+var gLocationLng = null;
+
 class GoldBeechApp extends Application.AppBase {
 
     function initialize() {
