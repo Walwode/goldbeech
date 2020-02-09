@@ -6,4 +6,5 @@
     <bitmap id="CosmoConsultClaimColored" filename="cosmoconsult-claim-colored.png" />
     <bitmap id="CosmoConsultWhite" filename="cosmoconsult-white.png" />
     <bitmap id="LaufszeneSachsenColored" filename="laufszenesachsen-colored.png" />
+    <bitmap id="Valentine" filename="valentine.png" />
 </drawables>

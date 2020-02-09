@@ -68,6 +68,7 @@ class GoldBeechView extends Ui.WatchFace {
             fonts["LARGE"],
             Lang.format("$1$", [clockTime.hour.format("%02d")]),
             Gfx.TEXT_JUSTIFY_RIGHT);
+        dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
         dc.drawText(
             dc.getWidth() / 2 + 1,
             -5,
@@ -75,9 +76,10 @@ class GoldBeechView extends Ui.WatchFace {
             Lang.format("$1$", [clockTime.min.format("%02d")]),
             Gfx.TEXT_JUSTIFY_LEFT);
 
-        if (true) {
+        if (active) {
+	        dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
             dc.drawText(
-                dc.getWidth() / 2 + 50,
+                dc.getWidth() / 2 + 48,
                 25,
                 fonts["NORMAL"],
                 Lang.format("$1$", [clockTime.sec.format("%02d")]),
@@ -109,12 +111,12 @@ class GoldBeechView extends Ui.WatchFace {
     	dc.drawLine(0, 138, ((Sys.getSystemStats().battery / 100) * dc.getWidth()), 138);
     	
         dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
-        dc.drawText(
-            dc.getWidth() / 4,
-            dc.getHeight() - 30,
-            fonts["TINY"],
-            Lang.format("$1$%", [Sys.getSystemStats().battery.format("%02d")]),
-            Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER);
+        // dc.drawText(
+        //     dc.getWidth() / 4,
+        //     dc.getHeight() - 30,
+        //     fonts["TINY"],
+        //     Lang.format("$1$%", [Sys.getSystemStats().battery.format("%02d")]),
+        //     Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER);
         dc.drawText(
             3 * dc.getWidth() / 4,
             dc.getHeight() - 30,
@@ -136,12 +138,11 @@ class GoldBeechView extends Ui.WatchFace {
         var m = Math.floor((sunTime - h) * 60);
 
         dc.drawText(
-            dc.getWidth()/2,
-            dc.getHeight() - 50,
+            dc.getWidth() / 4,
+            dc.getHeight() - 30,
             fonts["TINY"],
-            // Gfx.FONT_SMALL,
             Lang.format("$1$:$2$", [h.format("%02d"), m.format("%02d")]),
-            Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER);
+            Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER);
     }
 
     // Called when this View is brought to the foreground. Restore
